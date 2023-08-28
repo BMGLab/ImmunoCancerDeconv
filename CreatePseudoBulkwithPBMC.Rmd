@@ -1,0 +1,89 @@
+---
+title: "CreatePseudoBulkwithPBMCTutorial"
+author: "ozlem"
+date: "2023-08-28"
+output: html_document
+---
+
+
+
+## Create UMI count matrix
+
+UMI count matrix create with pbmc tutorial.
+
+```{r}
+umi <- pbmc@assays[["RNA"]]@counts
+```
+
+
+## Sum rows of UMI
+
+This function provides the sum of each row.
+
+```{r}
+sum_rows_of_umi <- function(umi){
+  num_genes <- nrow(umi)
+  num_cells <- ncol(umi)
+  
+  row_sums <- numeric(num_genes)
+  for (i in 1:num_genes) {
+    row_sums[i] <- sum(umi[i, ])
+    
+  }
+  return(row_sums)
+}
+
+new_sum_result <- sum_rows_of_umi(umi)
+print(new_sum_result)
+```
+
+## Sum all rows sums
+
+This function provides the sum of all rows. 
+
+
+```{r}
+sum_all_rows_sums <- function(umi){
+  num_genes <- nrow(umi)
+  num_cells <- ncol(umi)
+  
+  total_sum <- 0
+  for (i in 1: num_genes){
+    row_sum <- sum(umi[i,])
+    total_sum <- total_sum + row_sum
+  }
+  return(total_sum)
+}
+total_rows_sums_result <- sum_all_rows_sums(umi)
+
+print(total_rows_sums_result)
+```
+
+## Calculate row sum ratio
+
+This function provides divided by normalization value with each row sums. Normalization value is divided by 1000000 with sum of all rows sums.  
+
+
+```{r}
+calculate_row_sum_ratio <- function(umi) {
+  num_genes <- nrow(umi)
+  num_cells <- ncol(umi)
+  
+  row_sums <- numeric(num_genes)
+  total_rows_sum <- 0
+  for (i in 1:num_genes){
+    row_sums[i] <-sum(umi[i, ])
+    total_rows_sum <- total_rows_sum + row_sums
+    
+  }
+  total_rows_sum <- total_rows_sum / 1000000
+  row_sum_ratio <- row_sums / total_rows_sum
+  
+  return(row_sum_ratio)
+}
+
+row_sum_ratio_result <- calculate_row_sum_ratio(umi)
+print(row_sum_ratio_result)
+```
+
+
